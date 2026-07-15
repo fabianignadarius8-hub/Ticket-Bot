@@ -1,8 +1,12 @@
 const { Client, GatewayIntentBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, PermissionsBitField } = require('discord.js');
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMembers] });
 
-client.on('ready', () => {
+client.on('ready', async () => {
     console.log(`BOT ONLINE: ${client.user.tag}`);
+    try {
+        await client.application.commands.create({ name: 'panel', description: 'Crear el panel de tickets' });
+        console.log('Comando /panel registrado');
+    } catch (e) { console.log(e) }
 });
 
 client.on('interactionCreate', async (interaction) => {
