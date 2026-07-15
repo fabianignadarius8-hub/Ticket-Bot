@@ -38,4 +38,6 @@ client.on('interactionCreate', async (interaction) => {
     }
 });
 
-client.login(process.env.TOKEN);
+const token = process.env.TOKEN ? process.env.TOKEN.trim() : '';
+console.log('Longitud del token que lee Render:', token.length);
+client.login(token);
