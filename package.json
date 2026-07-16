@@ -1,9 +1,8 @@
-const ticketEmbed = new EmbedBuilder()
- .setTitle('🥚 ¡Nido Creado! 🦖')
- .setDescription(
-    `Hola ${interaction.user}, has eclosionado en un nido seguro.\n\n` +
-    `> **Describe tu problema** y un <@&ID_DE_TU_ROL_STAFF> vendrá a protegerte.\n\n` +
-    '`🦖` *No hagas ruido o atraerás a los carnívoros...*'
-  )
- .setColor('#9D00FF')
- .setFooter({ text: 'Para cerrar el nido usa el botón de abajo' });
+{
+  "name": "ticket-bot",
+  "main": "index.js",
+  "dependencies": {
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.0.0"
+  }
+}
