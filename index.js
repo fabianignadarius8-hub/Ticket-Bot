@@ -1,43 +1,33 @@
-const { Client, GatewayIntentBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, PermissionsBitField } = require('discord.js');
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMembers] });
+// PANEL NEON THE ISLE
+const panelEmbed = new EmbedBuilder()
+ .setTitle('🦖・THE ISLE - NIDO DE SOPORTE')
+ .setDescription(
+    '**Bienvenido superviviente al nido.**\n\n' +
+    '> 🌿 **¿Te han matado? ¿Bug? ¿Reportar a alguien?**\n' +
+    '> Pulsa el huevo de abajo y abre un nido privado.\n\n' +
+    '```ansi\n' +
+    '\u001b[2;32m\u001b[1;32m▸ Soporte rápido 24/7\u001b[0m\n' +
+    '\u001b[2;35m\u001b[1;35m▸ Staff especializado en The Isle\u001b[0m\n' +
+    '\u001b[2;36m\u001b[1;36m▸ No compartas tu nido con depredadores\u001b[0m\n' +
+    '```\n' +
+    '**¡Sobrevive y domina la isla!**'
+  )
+ .setColor('#00FF88')
+ .setThumbnail('https://i.imgur.com/CzXT6dp.png') // puedes poner el icono de tu server
+ .setImage('https://i.imgur.com/8Km9tLL.png') // banner neón dino - cámbialo si quieres
+ .setFooter({ text: 'The Isle • Sistema de Nidos • No afk en el nido', iconURL: interaction.guild.iconURL({ dynamic: true }) })
+ .setTimestamp();
 
-client.on('ready', async () => {
-    console.log(`BOT ONLINE: ${client.user.tag}`);
-    try {
-        await client.application.commands.create({ name: 'panel', description: 'Crear el panel de tickets' });
-        console.log('Comando /panel registrado');
-    } catch (e) { console.log(e) }
-});
+const row = new ActionRowBuilder().addComponents(
+  new ButtonBuilder()
+   .setCustomId('crear_ticket')
+   .setLabel('🥚 Abrir Nido')
+   .setStyle(ButtonStyle.Success),
+  new ButtonBuilder()
+   .setCustomId('info_isle')
+   .setLabel('🦕 Info')
+   .setStyle(ButtonStyle.Secondary)
+   .setDisabled(true) // quita esto si quieres que haga algo
+);
 
-client.on('interactionCreate', async (interaction) => {
-    if (interaction.isChatInputCommand && interaction.commandName === 'panel') {
-        const embed = new EmbedBuilder().setTitle('🎫 Soporte').setDescription('Haz clic en el botón para abrir un ticket privado.').setColor(0x5865F2);
-        const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('crear_ticket').setLabel('Crear Ticket').setStyle(ButtonStyle.Primary).setEmoji('🎫'));
-        await interaction.channel.send({ embeds: [embed], components: [row] });
-        await interaction.reply({ content: 'Panel creado!', ephemeral: true });
-    }
-    if (!interaction.isButton()) return;
-    if (interaction.customId === 'crear_ticket') {
-        const name = `ticket-${interaction.user.username}`.toLowerCase();
-        if (interaction.guild.channels.cache.find(c => c.name === name)) return interaction.reply({ content: '¡Ya tienes un ticket abierto!', ephemeral: true });
-        const ticketChannel = await interaction.guild.channels.create({
-            name: name,
-            type: ChannelType.GuildText,
-            permissionOverwrites: [
-                { id: interaction.guild.id, deny: [PermissionsBitField.Flags.ViewChannel] },
-                { id: interaction.user.id, allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages] }
-            ]
-        });
-        const rowClose = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('cerrar_ticket').setLabel('Cerrar Ticket').setStyle(ButtonStyle.Danger).setEmoji('🔒'));
-        await ticketChannel.send({ content: `${interaction.user} Bienvenido, el staff te atenderá pronto.`, components: [rowClose] });
-        await interaction.reply({ content: `Ticket creado: ${ticketChannel}`, ephemeral: true });
-    }
-    if (interaction.customId === 'cerrar_ticket') {
-        await interaction.reply({ content: 'Cerrando en 5 segundos...' });
-        setTimeout(() => interaction.channel.delete().catch(()=>{}), 5000);
-    }
-});
-
-const token = process.env.TOKEN ? process.env.TOKEN.trim() : '';
-console.log('Longitud del token que lee Render:', token.length);
-client.login(token);
+await interaction.reply({ embeds: [panelEmbed], components: [row] });
